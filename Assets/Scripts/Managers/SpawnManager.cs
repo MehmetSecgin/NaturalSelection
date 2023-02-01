@@ -52,7 +52,7 @@ namespace Managers
             var x = Random.Range(-100, 100);
             var z = Random.Range(-100, 100);
 
-            return new Vector3(x, 1, z);
+            return new Vector3(x, 0.1f, z);
         }
     }
 }

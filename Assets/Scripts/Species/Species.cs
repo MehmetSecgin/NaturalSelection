@@ -5,9 +5,16 @@ namespace Species
 {
     public class Species : MonoBehaviour, ISpecies
     {
+        // Properties
+        public SpeciesProperties Properties { get; set; }
+
+        // Components
         private Renderer _renderer;
         private Rigidbody _rb;
-        public SpeciesProperties Properties { get; set; }
+
+        // Variables
+        [SerializeField] private bool canMove = true;
+
 
         private void Awake()
         {
@@ -23,7 +30,26 @@ namespace Species
 
         private void FixedUpdate()
         {
-            Move();
+            if (canMove)
+            {
+                Move();
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Plane"))
+            {
+                canMove = false;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Plane"))
+            {
+                canMove = true;
+            }
         }
 
         public void Die()
@@ -33,7 +59,8 @@ namespace Species
 
         public void Move()
         {
-            _rb.AddForce(new Vector3(1, 0, 0) * Time.deltaTime * Properties.Speed * 100f,ForceMode.VelocityChange);
+            var vector = new Vector3(1, 0, 0);
+            _rb.AddForce(vector * Time.deltaTime * Properties.Speed, ForceMode.Acceleration);
         }
 
         private void ChangeColorBySpeed()
@@ -45,7 +72,7 @@ namespace Species
 
         private static byte GetRedValue(float speed)
         {
-            return (byte) (speed * 255f);
+            return (byte) ((1 - speed) * 255f);
         }
 
         private void ChangeHeight()

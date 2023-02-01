@@ -8,9 +8,10 @@ namespace Species
     public class SpeciesProperties
     {
         [SerializeField] private float speed;
-
         [SerializeField] private float height;
         private SpeciesLimits _limits;
+
+        private const float SpeedMultiplier = 10f;
 
         public SpeciesProperties(SpeciesLimits limits)
         {
@@ -22,7 +23,7 @@ namespace Species
         public float Speed
         {
             get => speed;
-            private set => speed = value;
+            private set => speed = value * SpeedMultiplier;
         }
 
         public float Height
