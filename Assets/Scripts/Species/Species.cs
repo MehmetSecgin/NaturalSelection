@@ -28,6 +28,16 @@ namespace Species
             ChangeColorBySpeed();
         }
 
+        private void ChangeColorBySpeed()
+        {
+            _renderer.material.color = SpeciesPropertyFunctions.GetColorBySpeed(Properties.Speed);
+        }
+
+        private void ChangeHeight()
+        {
+            transform.localScale = SpeciesPropertyFunctions.GetHeight(Properties.Height);
+        }
+
         private void FixedUpdate()
         {
             if (canMove)
@@ -61,25 +71,6 @@ namespace Species
         {
             var vector = new Vector3(1, 0, 0);
             _rb.AddForce(vector * Time.deltaTime * Properties.Speed, ForceMode.Acceleration);
-        }
-
-        private void ChangeColorBySpeed()
-        {
-            var redValue = GetRedValue(Properties.Speed);
-            var materialColor = new Color32(redValue, 100, 0, 100);
-            _renderer.material.color = materialColor;
-        }
-
-        private static byte GetRedValue(float speed)
-        {
-            return (byte) ((1 - speed) * 255f);
-        }
-
-        private void ChangeHeight()
-        {
-            var localScale = transform.localScale;
-            localScale = new Vector3(localScale.x, Properties.Height, localScale.z);
-            transform.localScale = localScale;
         }
     }
 }

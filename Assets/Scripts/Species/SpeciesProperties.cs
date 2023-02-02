@@ -11,7 +11,7 @@ namespace Species
         [SerializeField] private float height;
         private SpeciesLimits _limits;
 
-        private const float SpeedMultiplier = 10f;
+        private const float SpeedMultiplier = 20f;
 
         public SpeciesProperties(SpeciesLimits limits)
         {
