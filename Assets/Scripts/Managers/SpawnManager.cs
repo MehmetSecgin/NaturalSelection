@@ -13,6 +13,11 @@ namespace Managers
         // Species Property Limits
         private SpeciesLimits _speciesLimits;
 
+        // Spawner Settings
+        [HeaderAttribute("Spawner Settings")]
+        [SerializeField] private int speciesToSpawn = 100;
+        [SerializeField] private int xBounds = 50;
+        [SerializeField] private int yBounds = 50;
         public List<Species.Species> SpeciesList { get; } = new();
 
         private void Awake()
@@ -33,7 +38,7 @@ namespace Managers
 
         private void SpawnAllSpecies()
         {
-            for (var i = 0; i < 100; i++) SpawnSpecies();
+            for (var i = 0; i < speciesToSpawn; i++) SpawnSpecies();
         }
 
         private void SpawnSpecies()
@@ -47,10 +52,10 @@ namespace Managers
             SpeciesList.Add(speciesObject);
         }
 
-        private static Vector3 GetRandomSpawnLocation()
+        private Vector3 GetRandomSpawnLocation()
         {
-            var x = Random.Range(-100, 100);
-            var z = Random.Range(-100, 100);
+            var x = Random.Range(-xBounds, xBounds);
+            var z = Random.Range(-yBounds, yBounds);
 
             return new Vector3(x, 0.1f, z);
         }
