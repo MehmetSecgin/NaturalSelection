@@ -74,7 +74,9 @@ jobs:
         with:
           name: Coverage results for ${{ matrix.testMode }}
           path: ${{ steps.testRunner.outputs.coveragePath }}
-        run: echo "$PAATH"
+          
+      
+      - run: echo "$PAATH"
 
 #  buildWebGL:
 #    needs: testRunner
