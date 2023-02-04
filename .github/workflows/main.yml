@@ -71,7 +71,8 @@ jobs:
         if: always()
         with:
           name: Coverage results for ${{ matrix.testMode }}
-          path: ${{ steps.testRunner.outputs.coveragePath }}/workspace-opencov/**/**/*.xml
+          path: ${{ steps.testRunner.outputs.coveragePath }}
+          run: echo "$path"
 
 #  buildWebGL:
 #    needs: testRunner
