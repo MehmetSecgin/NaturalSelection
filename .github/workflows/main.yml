@@ -62,17 +62,16 @@ jobs:
           
       - name: Publish Test Results
         uses: actions/upload-artifact@v2
-        if: always()
         with:
           name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
           
       - name: Publish Test Coverage
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Coverage results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.coveragePath }}
+          path: ${{ steps.testRunner.outputs.coveragePath }}
 
 #  buildWebGL:
 #    needs: testRunner
