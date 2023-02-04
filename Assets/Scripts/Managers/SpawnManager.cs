@@ -31,9 +31,6 @@ namespace Managers
         private void Start()
         {
             SpawnAllSpecies();
-
-            var tallerThanOneMeter = SpeciesList.FindAll(species => species.Properties.Height >= 1f).Count;
-            Debug.Log(tallerThanOneMeter);
         }
 
         private void SpawnAllSpecies()
