@@ -69,10 +69,12 @@ jobs:
       - name: Publish Test Coverage
         uses: actions/upload-artifact@v2
         if: always()
+        env:
+          PAATH: ${{ steps.testRunner.outputs.coveragePath }}
         with:
           name: Coverage results for ${{ matrix.testMode }}
           path: ${{ steps.testRunner.outputs.coveragePath }}
-          run: echo path
+        run: echo "$PAATH"
 
 #  buildWebGL:
 #    needs: testRunner
