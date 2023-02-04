@@ -58,10 +58,18 @@ jobs:
           checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-artifact@v2
+      - name: Publish Test Results
+        uses: actions/upload-artifact@v2
         with:
           name: Test results (${{ matrix.testMode }})
           path: ${{ steps.testRunner.outputs.artifactsPath }}
+
+      - name: Publish Test Coverage
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Coverage results
+          path: ${{ steps.myTestStep.outputs.coveragePath }}
 
 #  buildWebGL:
 #    needs: testRunner
