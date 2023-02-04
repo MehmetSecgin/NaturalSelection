@@ -470,8 +470,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speciesToSpawn: 5
-  xBounds: 50
-  yBounds: 50
+  xBounds: 25
+  yBounds: 25
 --- !u!114 &1395013225
 MonoBehaviour:
   m_ObjectHideFlags: 0
