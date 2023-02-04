@@ -55,21 +55,24 @@ jobs:
         id: testRunner
         with:
           testMode: ${{ matrix.testMode }}
-          checkName: ${{ matrix.testMode }} test results
+          artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-
+          checkName: ${{ matrix.testMode }} Test Results
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;'
+          
       - name: Publish Test Results
         uses: actions/upload-artifact@v2
+        if: always()
         with:
-          name: Test results (${{ matrix.testMode }})
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
-
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          
       - name: Publish Test Coverage
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: Coverage results
-          path: ${{ steps.myTestStep.outputs.coveragePath }}
+          name: Coverage results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.coveragePath }}
 
 #  buildWebGL:
 #    needs: testRunner
