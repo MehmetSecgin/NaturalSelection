@@ -71,7 +71,7 @@ jobs:
         if: always()
         with:
           name: Coverage results for ${{ matrix.testMode }}
-          path: ${{ steps.testRunner.outputs.coveragePath }}/**/*.xml
+          path: ${{ steps.testRunner.outputs.coveragePath }}/*.xml
 
 #  buildWebGL:
 #    needs: testRunner
