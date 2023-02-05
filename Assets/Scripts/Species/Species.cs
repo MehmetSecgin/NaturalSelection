@@ -16,9 +16,13 @@ namespace Species
         // Variables
 
         // Move Variables
-        private Quaternion _targetRotation;
-        private bool _rotating;
-        private Vector3 _moveDirection;
+        [Header("Speed Properties")]
+        [SerializeField] private float speed;
+        
+        [Header("Rotation Properties")]
+        [SerializeField] private Quaternion targetRotation;
+        [SerializeField] private bool rotating;
+        [SerializeField] private Vector3 moveDirection;
 
 
         private void Awake()
@@ -28,6 +32,7 @@ namespace Species
 
         private void Start()
         {
+            speed = Properties.Speed;
             ChangeHeight();
             ChangeColorBySpeed();
 
@@ -102,15 +107,7 @@ namespace Species
                 RotateAndMoveToCenter();
             }
         }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.CompareTag("Plane"))
-            {
-                // canMove = true;
-            }
-        }
-
+        
         public void Die()
         {
             throw new NotImplementedException();
@@ -118,16 +115,16 @@ namespace Species
 
         public void Move()
         {
-            transform.position += _moveDirection * (Properties.Speed * Time.deltaTime);
+            transform.position += moveDirection * (Properties.Speed * Time.deltaTime);
 
             // Rotate towards the target rotation
-            if (!_rotating) return;
+            if (!rotating) return;
             transform.rotation =
-                Quaternion.Slerp(transform.rotation, _targetRotation, Properties.RotationSpeed * Time.deltaTime);
+                Quaternion.Slerp(transform.rotation, targetRotation, Properties.RotationSpeed * Time.deltaTime);
 
             // Check if rotation is complete
-            if (!(Quaternion.Angle(transform.rotation, _targetRotation) < 0.1f)) return;
-            _rotating = false;
+            if (!(Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)) return;
+            rotating = false;
             StartCoroutine(ChangeDirection());
         }
 
@@ -141,9 +138,9 @@ namespace Species
 
         private void RotateAndMoveToRandom()
         {
-            _moveDirection = RandomDirection();
-            _targetRotation = Quaternion.LookRotation(_moveDirection);
-            _rotating = true;
+            moveDirection = RandomDirection();
+            targetRotation = Quaternion.LookRotation(moveDirection);
+            rotating = true;
         }
 
         private static Vector3 RandomDirection()
@@ -153,10 +150,10 @@ namespace Species
 
         private void RotateAndMoveToCenter()
         {
-            _rotating = false;
-            _moveDirection = (Vector3.zero - transform.position).normalized;
-            _targetRotation = Quaternion.LookRotation(_moveDirection);
-            _rotating = true;
+            rotating = false;
+            moveDirection = (Vector3.zero - transform.position).normalized;
+            targetRotation = Quaternion.LookRotation(moveDirection);
+            rotating = true;
         }
     }
 }
