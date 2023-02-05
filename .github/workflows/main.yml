@@ -50,6 +50,7 @@ jobs:
           restore-keys: |
             Library-test-project-
             Library-
+            
       - name: Run tests
         uses: game-ci/unity-test-runner@v2
         id: testRunner
@@ -66,10 +67,9 @@ jobs:
 
       - name: Publish Test Coverage
         uses: actions/upload-artifact@v2
-        if: always()
         with:
-          name: Coverage results
-          path: ${{ steps.myTestStep.outputs.coveragePath }}
+          name: Test coverage results (${{ matrix.testMode }})
+          path: ${{ steps.testRunner.outputs.coveragePath }}
 
 #  buildWebGL:
 #    needs: testRunner
