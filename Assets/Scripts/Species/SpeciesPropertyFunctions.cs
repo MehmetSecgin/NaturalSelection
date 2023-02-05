@@ -21,8 +21,9 @@ namespace Species
 
         private static byte GetRedValue(float speed)
         {
-            // 1 - speed because I want it to be Greener when speed is higher
-            return (byte) ((1 - speed) * MaxRedValue);
+            // 5 - speed because I want it to be Greener when speed is higher
+            var redValue = (5 - speed) * MaxRedValue / 5;
+            return (byte) redValue;
         }
     }
 }
