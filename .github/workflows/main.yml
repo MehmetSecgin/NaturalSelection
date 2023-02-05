@@ -58,18 +58,19 @@ jobs:
           testMode: ${{ matrix.testMode }}
           checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          customParameters: -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ./coverage-results -coverageOptions generateAdditionalMetrics
 
-      - name: Publish Test Results
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: Test results (${{ matrix.testMode }})
           path: ${{ steps.testRunner.outputs.artifactsPath }}
-
+          
       - name: Publish Test Coverage
         uses: actions/upload-artifact@v2
         with:
           name: Test coverage results (${{ matrix.testMode }})
           path: ${{ steps.testRunner.outputs.coveragePath }}
+
 
 #  buildWebGL:
 #    needs: testRunner
