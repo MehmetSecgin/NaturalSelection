@@ -6,8 +6,8 @@ namespace Species
     [Serializable]
     public class SpeciesLimits : MonoBehaviour
     {
-        [Header("Speed and Height")] [Range(0f, 1f)]
-        public float minSpeed;
+        [Header("Speed and Height")]
+        [Range(0f, 1f)] public float minSpeed;
 
         [Range(0f, 1f)] public float maxSpeed;
 
@@ -17,6 +17,7 @@ namespace Species
 
         [Header("Rotation")]
         [Range(1f, 10f)] public float rotationSpeed;
-        [Range(1f,5f)] public float rotationDuration;
+
+        [Range(1f, 5f)] public float rotationDuration;
     }
 }
