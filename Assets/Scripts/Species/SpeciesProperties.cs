@@ -32,7 +32,7 @@ namespace Species
         public float RotationSpeed
         {
             get => _rotationSpeed;
-            private set => _rotationSpeed = value;
+            private set => _rotationSpeed = value * Speed;
         }
 
         public float RotationDuration
@@ -40,21 +40,29 @@ namespace Species
             get =>
                 Random.Range(_rotationDuration - RotationDurationRandomnessThreshold,
                     _rotationDuration + RotationDurationRandomnessThreshold);
-            private set => _rotationDuration = value;
+            private set => _rotationDuration = value * (5 - Speed);
         }
 
         public SpeciesProperties(SpeciesLimits limits)
         {
             _limits = limits;
-            RotationSpeed = _limits.rotationSpeed;
-            RotationDuration = _limits.rotationDuration;
             Speed = GetRandomValue(_limits.minSpeed, _limits.maxSpeed);
             Height = GetRandomValue(_limits.minHeight, _limits.maxHeight);
+            RotationSpeed = _limits.rotationSpeed;
+            RotationDuration = _limits.rotationDuration;
         }
 
         private float GetRandomValue(float minValue, float maxValue)
         {
             return Random.Range(minValue, maxValue);
+        }
+
+        public override string ToString()
+        {
+            return "MoveSpeed: " + Speed +
+                   " Height: " + Height +
+                   " Rotation Duration: " + RotationDuration +
+                   " Rotation Speed: " + RotationSpeed;
         }
     }
 }
