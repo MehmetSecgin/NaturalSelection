@@ -64,14 +64,11 @@ jobs:
         with:
           name: Test results (${{ matrix.testMode }})
           path: ${{ steps.testRunner.outputs.artifactsPath }}
-          
-      - name: Upload XML report to Codecov
-        uses: codecov/codecov-action@v2
+                    
+      - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.testMode }}
-          flags: automated
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage-results/**/*.xml
+          name: Test results (${{ matrix.testMode }})
+          path: ${{ steps.testRunner.outputs.coveragePath }}
           
 #  buildWebGL:
 #    needs: testRunner
