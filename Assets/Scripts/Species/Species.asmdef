@@ -1,0 +1,16 @@
+{
+    "name": "Species",
+    "rootNamespace": "",
+    "references": [
+        "GUID:aaa4bcdb17fab4d399f28d691bb3f1d9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
