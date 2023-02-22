@@ -1,93 +1,68 @@
 using System;
-using System.Collections;
+using Gatherable;
+using Species.States;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.AI;
 
 namespace Species
 {
-    public class Species : MonoBehaviour, ISpecies
+    public class Species : MonoBehaviour
     {
+        public event Action<int> OnFoodCountChanged;
+
         // Properties
         public SpeciesProperties Properties { get; set; }
+        public GatherableResource Target { get; set; }
 
         // Components
         private Renderer _renderer;
 
-        // Variables
-
-        // Move Variables
-        [Header("Speed Properties")]
-        [SerializeField] private float speed;
         
-        [Header("Rotation Properties")]
-        [SerializeField] private Quaternion targetRotation;
-        [SerializeField] private bool rotating;
-        [SerializeField] private Vector3 moveDirection;
+        private StateMachine _stateMachine;
+        private NavMeshAgent _navMeshAgent;
 
+        private int _foodCount = 0;
 
         private void Awake()
         {
-            _renderer = gameObject.GetComponent<MeshRenderer>();
+            _renderer = GetComponent<MeshRenderer>();
+            _navMeshAgent = GetComponent<NavMeshAgent>();
+            
+            _stateMachine = new StateMachine();
+
+            var search = new SearchForFood(this);
+            var moveToSelected = new MoveToSelectedResource(this, _navMeshAgent);
+            var eatFood = new EatFood(this);
+
+            At(search, moveToSelected, HasTarget());
+            At(moveToSelected, search, StuckForOverASecond());
+            At(moveToSelected, eatFood, ReachedResource());
+            At(eatFood, search, TargetIsDepleted());
+
+            _stateMachine.SetState(search);
+
+            void At(IState from, IState to, Func<bool> condition) =>
+                _stateMachine.AddTransition(from, to, condition);
+
+            Func<bool> HasTarget() => () => Target != null;
+            Func<bool> StuckForOverASecond() => () => moveToSelected.TimeStuck > 1f;
+            Func<bool> ReachedResource() => () =>
+                Target != null && Vector3.Distance(transform.position, Target.transform.position) < 3f;
+            Func<bool> TargetIsDepleted() => () => (Target == null || Target.IsDepleted);
         }
 
-        private void Start()
+        private void Update()
         {
-            speed = Properties.Speed;
-            ChangeHeight();
-            ChangeColorBySpeed();
-
-            UpdateState(SpeciesState.Rotating);
+            _stateMachine.Tick();
         }
 
-        private void FixedUpdate()
+        public void TakeFromTarget()
         {
-            Move();
+            if (!Target.Take()) return;
+            _foodCount++;
+            OnFoodCountChanged?.Invoke(_foodCount);
         }
 
-        private void UpdateState(SpeciesState newState)
-        {
-            switch (newState)
-            {
-                case SpeciesState.Idle:
-                    HandleIdle();
-                    break;
-                case SpeciesState.Rotating:
-                    HandleRotating();
-                    break;
-                case SpeciesState.Searching:
-                    HandleSearching();
-                    break;
-                case SpeciesState.FoundFood:
-                    HandleFoundFood();
-                    break;
-                case SpeciesState.TakingFood:
-                    HandleTakingFood();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-            }
-        }
-
-        private void HandleRotating()
-        {
-            RotateAndMoveToRandom();
-        }
-
-        private void HandleTakingFood()
-        {
-        }
-
-        private void HandleFoundFood()
-        {
-        }
-
-        private void HandleSearching()
-        {
-        }
-
-        private void HandleIdle()
-        {
-        }
 
         private void ChangeColorBySpeed()
         {
@@ -97,63 +72,6 @@ namespace Species
         private void ChangeHeight()
         {
             transform.localScale = SpeciesPropertyFunctions.GetHeight(Properties.Height);
-        }
-
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Plane"))
-            {
-                RotateAndMoveToCenter();
-            }
-        }
-        
-        public void Die()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Move()
-        {
-            transform.position += moveDirection * (Properties.Speed * Time.deltaTime);
-
-            // Rotate towards the target rotation
-            if (!rotating) return;
-            transform.rotation =
-                Quaternion.Slerp(transform.rotation, targetRotation, Properties.RotationSpeed * Time.deltaTime);
-
-            // Check if rotation is complete
-            if (!(Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)) return;
-            rotating = false;
-            StartCoroutine(ChangeDirection());
-        }
-
-        private IEnumerator ChangeDirection()
-        {
-            yield return new WaitForSeconds(Properties.RotationDuration);
-
-            // Move in a new random direction
-            UpdateState(SpeciesState.Rotating);
-        }
-
-        private void RotateAndMoveToRandom()
-        {
-            moveDirection = RandomDirection();
-            targetRotation = Quaternion.LookRotation(moveDirection);
-            rotating = true;
-        }
-
-        private static Vector3 RandomDirection()
-        {
-            return new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
-        }
-
-        private void RotateAndMoveToCenter()
-        {
-            rotating = false;
-            moveDirection = (Vector3.zero - transform.position).normalized;
-            targetRotation = Quaternion.LookRotation(moveDirection);
-            rotating = true;
         }
     }
 }
