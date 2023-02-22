@@ -14,10 +14,10 @@ namespace Managers
         private SpeciesLimits _speciesLimits;
 
         // Spawner Settings
-        [HeaderAttribute("Spawner Settings")]
+        [HeaderAttribute("Spawner Settings")] 
+        [SerializeField] private PlaneProperties planeProperties;
         [SerializeField] private int speciesToSpawn = 100;
-        [SerializeField] private int xBounds = 50;
-        [SerializeField] private int yBounds = 50;
+
         public List<Species.Species> SpeciesList { get; } = new();
 
         private void Awake()
@@ -51,8 +51,8 @@ namespace Managers
 
         private Vector3 GetRandomSpawnLocation()
         {
-            var x = Random.Range(-xBounds, xBounds);
-            var z = Random.Range(-yBounds, yBounds);
+            var x = Random.Range(-planeProperties.XBounds, planeProperties.XBounds);
+            var z = Random.Range(-planeProperties.YBounds, planeProperties.YBounds);
 
             return new Vector3(x, 0.1f, z);
         }
