@@ -13,6 +13,11 @@ namespace Managers
         // Species Property Limits
         private SpeciesLimits _speciesLimits;
 
+        // Spawner Settings
+        [HeaderAttribute("Spawner Settings")] 
+        [SerializeField] private PlaneProperties planeProperties;
+        [SerializeField] private int speciesToSpawn = 100;
+
         public List<Species.Species> SpeciesList { get; } = new();
 
         private void Awake()
@@ -26,14 +31,11 @@ namespace Managers
         private void Start()
         {
             SpawnAllSpecies();
-
-            var tallerThanOneMeter = SpeciesList.FindAll(species => species.Properties.Height >= 1f).Count;
-            Debug.Log(tallerThanOneMeter);
         }
 
         private void SpawnAllSpecies()
         {
-            for (var i = 0; i < 100; i++) SpawnSpecies();
+            for (var i = 0; i < speciesToSpawn; i++) SpawnSpecies();
         }
 
         private void SpawnSpecies()
@@ -47,10 +49,10 @@ namespace Managers
             SpeciesList.Add(speciesObject);
         }
 
-        private static Vector3 GetRandomSpawnLocation()
+        private Vector3 GetRandomSpawnLocation()
         {
-            var x = Random.Range(-100, 100);
-            var z = Random.Range(-100, 100);
+            var x = Random.Range(-planeProperties.XBounds, planeProperties.XBounds);
+            var z = Random.Range(-planeProperties.YBounds, planeProperties.YBounds);
 
             return new Vector3(x, 0.1f, z);
         }

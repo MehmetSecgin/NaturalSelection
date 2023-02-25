@@ -35,7 +35,7 @@ namespace Tests
             // Arrange
             var expected = new Color32(0, 100, 0, 100);
             // Act
-            var actual = SpeciesPropertyFunctions.GetColorBySpeed(1f);
+            var actual = SpeciesPropertyFunctions.GetColorBySpeed(5f);
             // Assert
             Assert.AreEqual(expected.r,actual.r);
         }
@@ -46,7 +46,7 @@ namespace Tests
             // Arrange
             var expected = new Color32(229, 100, 0, 100);
             // Act
-            var actual = SpeciesPropertyFunctions.GetColorBySpeed(0.1f);
+            var actual = SpeciesPropertyFunctions.GetColorBySpeed(0.5f);
             // Assert
             Assert.AreEqual(expected.r,actual.r);
         }

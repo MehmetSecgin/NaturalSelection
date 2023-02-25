@@ -1,8 +1,9 @@
 {
-    "name": "ManagersAssembly",
+    "name": "Species",
     "rootNamespace": "",
     "references": [
-        "GUID:1843636057bfe4908bff8b8c34ca3f54"
+        "GUID:aaa4bcdb17fab4d399f28d691bb3f1d9",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

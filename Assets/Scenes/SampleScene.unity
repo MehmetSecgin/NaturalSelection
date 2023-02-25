@@ -504,6 +504,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffb727f24cc4d4cb6b70f43039bb0930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speciesToSpawn: 100
+  xBounds: 95
+  yBounds: 95
 --- !u!114 &1395013225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518,8 +521,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minSpeed: 0.5
   maxSpeed: 1
-  minHeight: 0
-  maxHeight: 1
+  minHeight: 1
+  maxHeight: 2
+  rotationSpeed: 5
+  rotationDuration: 1
 --- !u!1 &1577667584
 GameObject:
   m_ObjectHideFlags: 0
