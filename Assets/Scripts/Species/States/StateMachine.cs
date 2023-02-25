@@ -6,6 +6,7 @@ namespace Species.States
 {
     public class StateMachine
     {
+        public event Action<IState> OnStateChanged;
         private IState _currentState;
 
         private readonly Dictionary<Type, List<Transition>> _transitions = new();
@@ -35,6 +36,8 @@ namespace Species.States
             _currentTransitions ??= EmptyTransitions;
 
             _currentState.OnEnter();
+            
+            OnStateChanged?.Invoke(_currentState);
         }
 
         public void AddTransition(IState from, IState to, Func<bool> predicate)

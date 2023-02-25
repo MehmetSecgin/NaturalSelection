@@ -8,61 +8,79 @@ namespace Species
 {
     public class Species : MonoBehaviour
     {
-        public event Action<int> OnFoodCountChanged;
+        public event Action<IState> OnStateChanged;
 
         // Properties
         public SpeciesProperties Properties { get; set; }
-        public GatherableResource Target { get; set; }
+
+        [SerializeField] public GatherableResource target;
+        public bool targetStillActive = true;
+        public bool noOtherTargetsLeft;
 
         // Components
         private Renderer _renderer;
-
-        
-        private StateMachine _stateMachine;
+        protected internal StateMachine StateMachine;
         private NavMeshAgent _navMeshAgent;
 
-        private int _foodCount = 0;
+        private int _foodCount;
 
         private void Awake()
         {
             _renderer = GetComponent<MeshRenderer>();
             _navMeshAgent = GetComponent<NavMeshAgent>();
-            
-            _stateMachine = new StateMachine();
+
+            targetStillActive = true;
+
+            StateMachine = new StateMachine();
+            StateMachine.OnStateChanged += OnStateChanged;
 
             var search = new SearchForFood(this);
             var moveToSelected = new MoveToSelectedResource(this, _navMeshAgent);
             var eatFood = new EatFood(this);
-
+            var noFood = new NoFoodLeft(this);
+            
+            At(search, noFood, NoTargetLeft());
             At(search, moveToSelected, HasTarget());
-            At(moveToSelected, search, StuckForOverASecond());
             At(moveToSelected, eatFood, ReachedResource());
+            At(moveToSelected, search, TargetIsDepleted());
             At(eatFood, search, TargetIsDepleted());
 
-            _stateMachine.SetState(search);
+            StateMachine.SetState(search);
 
-            void At(IState from, IState to, Func<bool> condition) =>
-                _stateMachine.AddTransition(from, to, condition);
+            void At(IState from, IState to, Func<bool> condition) => 
+                StateMachine.AddTransition(from, to, condition);
 
-            Func<bool> HasTarget() => () => Target != null;
-            Func<bool> StuckForOverASecond() => () => moveToSelected.TimeStuck > 1f;
+            Func<bool> HasTarget() => () => target != null;
+
+            Func<bool> TargetIsDepleted() => () => (target == null || target.IsDepleted);
+
             Func<bool> ReachedResource() => () =>
-                Target != null && Vector3.Distance(transform.position, Target.transform.position) < 3f;
-            Func<bool> TargetIsDepleted() => () => (Target == null || Target.IsDepleted);
+                targetStillActive && Vector3.Distance(transform.position, target.transform.position) < 4f;
+
+            Func<bool> NoTargetLeft() => () => noOtherTargetsLeft;
+        }
+
+        public void CurrentTargetIsDepleted(GatherableResource resource)
+        {
+            target = resource;
         }
 
         private void Update()
         {
-            _stateMachine.Tick();
+            StateMachine.Tick();
         }
 
         public void TakeFromTarget()
         {
-            if (!Target.Take()) return;
+            if (!target.Take()) return;
             _foodCount++;
-            OnFoodCountChanged?.Invoke(_foodCount);
+            // OnFoodCountChanged?.Invoke(_foodCount);
         }
 
+        private void OnDestroy()
+        {
+            StateMachine.OnStateChanged -= OnStateChanged;
+        }
 
         private void ChangeColorBySpeed()
         {

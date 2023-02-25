@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
 using Gatherable;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace Species.States
 {
@@ -11,7 +8,6 @@ namespace Species.States
     {
         private const string StateName = "SearchForFood";
         private readonly Species _species;
-        public Action OnDepleted;
 
         public SearchForFood(Species species)
         {
@@ -20,34 +16,40 @@ namespace Species.States
 
         public void Tick()
         {
-            _species.Target = ChooseOneOfTheNearestFoods(5);
+            var resource = ChooseOneOfTheNearestFoods(5);
+            if (resource != null)
+            {
+                _species.target = resource;
+                _species.targetStillActive = true;
+            }
+            else
+            {
+                _species.noOtherTargetsLeft = true;
+            }
         }
 
         private GatherableResource ChooseOneOfTheNearestFoods(int pickFromNearest)
         {
-            // todo EXTREMELY UNOPTIMIZED
-            var chooseOneOfTheNearestFoods = Object.FindObjectsOfType<GatherableResource>()
-                .OrderBy(t => Vector3.Distance(_species.transform.position, t.transform.position))
-                .Where(t => t.IsDepleted == false)
-                .Take(pickFromNearest)
-                .OrderBy(t => Random.Range(0, int.MaxValue))
-                .FirstOrDefault();
-            return chooseOneOfTheNearestFoods;
+            var gatherableResources = Object.FindObjectsOfType<GatherableResource>()
+                .Where(t => t.enabled && t.IsDepleted == false)
+                .ToList();
+            var nearestFoods =
+                gatherableResources.OrderBy(t => Vector3.Distance(_species.transform.position, t.transform.position))
+                    .Take(pickFromNearest)
+                    .FirstOrDefault();
+            return nearestFoods;
         }
 
         public void OnEnter()
         {
-            Debug.Log(_species.name + " Entered State: " + StateName);
         }
         public void OnExit()
         {
-            OnDepleted?.Invoke();
-            Debug.Log(_species.name + " Exited State: " + StateName);
         }
 
         public override string ToString()
         {
-            return _species.name + ": SearchForFood";
+            return StateName;
         }
     }
 }

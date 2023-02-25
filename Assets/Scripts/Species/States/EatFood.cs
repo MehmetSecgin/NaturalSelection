@@ -16,26 +16,28 @@ namespace Species.States
 
         public void Tick()
         {
-            if (_species.Target == null) return;
+            if (_species.target == null)
+            {
+                _species.targetStillActive = false;
+                return;
+            }
 
             if (!(_nextTakeResourceTime <= Time.time)) return;
 
-            _nextTakeResourceTime = Time.time + (1f / ResourcesPerSecond);
+            _nextTakeResourceTime = Time.time + 1f / ResourcesPerSecond;
             _species.TakeFromTarget();
         }
 
         public void OnEnter()
         {
-            Debug.Log(_species.name + " Entered State: " + StateName);
         }
         public void OnExit()
         {
-            Debug.Log(_species.name + " Exited State: " + StateName);
         }
 
         public override string ToString()
         {
-            return _species.name + ": EatFood";
+            return StateName;
         }
     }
 }
