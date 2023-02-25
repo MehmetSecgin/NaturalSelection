@@ -7,30 +7,32 @@ namespace Gatherable
     [Serializable]
     public abstract class GatherableResource : MonoBehaviour
     {
-        [SerializeField] protected int totalAvailable;
+        public static event Action<GatherableResource> OnDepleted;
 
-        protected int Available;
+        protected int TotalAvailable;
+        [SerializeField] protected int Available;
         public bool IsDepleted => Available <= 0;
 
         protected virtual void OnEnable()
         {
-            Available = totalAvailable;
+            Available = TotalAvailable;
         }
 
         public bool Take()
         {
             if (Available <= 0)
+            {
                 return false;
+            }
+
             Available--;
-
             UpdateSize();
-
             return true;
         }
 
         public virtual void UpdateSize()
         {
-            var scale = (float) Available / totalAvailable;
+            var scale = (float) Available / TotalAvailable;
             if (scale is > 0 and < 1f)
             {
                 var localTransform = transform;
@@ -41,6 +43,12 @@ namespace Gatherable
             {
                 gameObject.SetActive(false);
             }
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log(name + " is depleted");
+            OnDepleted?.Invoke(this);
         }
 
         [ContextMenu("Snap")]

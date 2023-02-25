@@ -21,7 +21,7 @@ namespace Gatherable
 
         protected override void OnEnable()
         {
-            totalAvailable = _berryList.Count;
+            TotalAvailable = _berryList.Count;
             base.OnEnable();
         }
 
